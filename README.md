@@ -1,6 +1,6 @@
-# Nothing X Advanced EQ QR Code Decoder
+# Nothing X Advanced EQ Decoder & Encoder
 
-A cross-platform Python tool to extract, decode, and export **Nothing X** 8-band Advanced EQ profiles from screenshots, image files, or raw QR text strings.
+A cross-platform Python toolkit to extract, decode, edit, and generate **Nothing X** 8-band Advanced EQ profiles from screenshots, CSV files, or raw QR payloads.
 
 Compatible with **Windows** and **Linux**.
 
@@ -12,9 +12,11 @@ Compatible with **Windows** and **Linux**.
 - **Binary Format Parsing**: Decodes Nothing X's proprietary Gzip-compressed binary structure into human-readable parameters:
   - Profile Name
   - 8 Bands: Frequency (Hz), Gain (dB), and Q Factor
-- **Formatted Terminal Table**: Clean ASCII display for easy reference.
-- **CSV Export**: Export profiles to CSV files for spreadsheets, backup, or importing into Equalizer APO / Peace EQ.
-- **Direct String Mode**: Can parse raw Base64 QR text directly without requiring an image.
+- **Hardware Constraint Validation**: Automatically checks frequencies, gain (-6 to +6 dB), and Q factors (0.1 to 10.0) against Nothing's official hardware limits.
+- **Authentic Nothing-Style QR Generator**: Generates scanner-compliant QR codes featuring Nothing's signature dot-matrix modules, rounded eyes, and central earbud emblem.
+- **Full Share Poster Mode**: Optionally creates the complete 9:16 Nothing share card with frequency response curve preview.
+- **CSV Import & Export**: Export profiles or create new profiles to and from CSV.
+- **Direct String Mode**: Can parse and generate raw Base64 QR text payloads directly.
 
 ---
 
@@ -22,8 +24,8 @@ Compatible with **Windows** and **Linux**.
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/nothing-x-eq-parser.git
-cd nothing-x-eq-parser
+git clone https://github.com/farhan-real/nothing-eq-decoder.git
+cd nothing-eq-decoder
 ```
 
 ### 2. Install Python Dependencies
@@ -32,7 +34,7 @@ pip install -r requirements.txt
 ```
 
 ### Linux-Specific Requirement
-On Linux distributions, `pyzbar` requires the system ZBar shared library. Install it using your package manager:
+On Linux distributions, `pyzbar` requires the system ZBar shared library:
 
 - **Debian / Ubuntu / Mint**:
   ```bash
@@ -53,31 +55,73 @@ On Linux distributions, `pyzbar` requires the system ZBar shared library. Instal
 
 ## Usage
 
-### 1. Scan a Screenshot
+### 1. Decoding (`decoder.py`)
+
+#### Scan a Screenshot
 ```bash
-python main.py screenshot.png
+python decoder.py screenshot.png
 ```
 
-### 2. Scan and Export to CSV
+#### Scan and Export to CSV
 Export using the profile's name automatically (`<profile_name>.csv`):
 ```bash
-python main.py screenshot.png --csv
+python decoder.py screenshot.png --csv
 ```
 
 Or specify a custom CSV output path:
 ```bash
-python main.py screenshot.png --csv my_profile.csv
+python decoder.py screenshot.png --csv my_profile.csv
 ```
 
-### 3. Decode from Raw Text / Base64 String
-If you already scanned the QR code with another app or copied the text from a forum:
+#### Decode from Raw Text / Base64 String
 ```bash
-python main.py -s "H4sIAAAAAAAA/2NIYGBocGBgqHA6e8bHHsL+5WRsbAxkH7BnaDjuPGvmTCCb4QDDgUoXY+PNIDZIDZStAGRXuYLVMjQA8S9XqBogqHIDmcPIk5ZYlJGYp1tSmpeaAgAeLOEhcAAAAA=="
+python decoder.py -s "H4sIAAAAAAAA/2NIYGBocGBgqHA6e8bHHsL+5WRsbAxkH7BnaDjuPGvmTCCb4QDDgUoXY+PNIDZIDZStAGRXuYLVMjQA8S9XqBogqHIDmcPIk5ZYlJGYp1tSmpeaAgAeLOEhcAAAAA=="
 ```
 
 ---
 
+### 2. Encoding (`encoder.py`)
+
+#### Generate a Nothing-Style QR Code from CSV
+Takes an 8-band CSV file, validates each band against hardware limits, and creates `<profile_name>_qr.png`:
+```bash
+python encoder.py farhan-tuned.csv
+```
+*(By default, it uses the CSV filename without the extension as the profile name).*
+
+#### Specify a Custom Profile Name
+```bash
+python encoder.py input.csv --name "Custom Bass"
+```
+
+#### Generate Full Share Poster
+Generates both the standalone QR card and the full 9:16 Nothing share poster:
+```bash
+python encoder.py farhan-tuned.csv --card --author "Farhan"
+```
+
+---
+
+## Hardware Limits Reference
+
+The encoder automatically validates your CSV data against Nothing's parametric EQ hardware specifications:
+
+| Band | Frequency Range | Gain Limit | Q Factor Limit |
+|:---:|:---|:---|:---|
+| **1** | 20–99 Hz | -6.0 to +6.0 dB | 0.1–10.0 |
+| **2** | 100–199 Hz | -6.0 to +6.0 dB | 0.1–10.0 |
+| **3** | 200–399 Hz | -6.0 to +6.0 dB | 0.1–10.0 |
+| **4** | 400–999 Hz | -6.0 to +6.0 dB | 0.1–10.0 |
+| **5** | 1,000–2,999 Hz | -6.0 to +6.0 dB | 0.1–10.0 |
+| **6** | 3,000–5,999 Hz | -6.0 to +6.0 dB | 0.1–10.0 |
+| **7** | 6,000–11,999 Hz | -6.0 to +6.0 dB | 0.1–10.0 |
+| **8** | 12,000–20,000 Hz | -6.0 to +6.0 dB | 0.1–10.0 |
+
+---
+
 ## Example Output
+
+### Terminal Output (`decoder.py`)
 
 ```text
 [*] Scanning 'screenshot.png' for QR code...
@@ -104,7 +148,7 @@ python main.py -s "H4sIAAAAAAAA/2NIYGBocGBgqHA6e8bHHsL+5WRsbAxkH7BnaDjuPGvmTCCb4
 [✓] Successfully exported EQ profile to: /path/to/farhan-tuned.csv
 ```
 
-### Exported CSV Structure
+### CSV Format
 ```csv
 Frequency (Hz),Gain (dB),Q Factor
 62.0,4.0,0.8
