@@ -1,6 +1,6 @@
 # Nothing X Advanced EQ Decoder & Encoder
 
-A cross-platform Python toolkit to extract, decode, edit, and generate **Nothing X** 8-band Advanced EQ profiles from screenshots, CSV files, or raw QR payloads.
+A cross-platform Python toolkit to extract, decode, edit, and generate **Nothing X** 8-band Advanced EQ profiles from images (PNG, JPG, WEBP, BMP), CSV files, or raw QR payloads.
 
 Compatible with **Windows** and **Linux**.
 
@@ -8,12 +8,12 @@ Compatible with **Windows** and **Linux**.
 
 ## Features
 
-- **Screenshot & Cluttered Image Tolerant**: Automatically isolates and decodes QR codes embedded inside phone screenshots, social media posts, and dark/light mode interfaces.
+- **Screenshot & Cluttered Image Tolerant**: Automatically isolates and decodes QR codes from screenshots, photos, and dark/light mode interfaces across standard formats (PNG, JPG/JPEG, WEBP, BMP).
 - **Binary Format Parsing**: Decodes Nothing X's proprietary Gzip-compressed binary structure into human-readable parameters:
   - Profile Name
   - 8 Bands: Frequency (Hz), Gain (dB), and Q Factor
-- **Hardware Constraint Validation**: Automatically checks frequencies, gain (-6 to +6 dB), and Q factors (0.1 to 10.0) against Nothing's official hardware limits.
-- **Authentic Nothing-Style QR Generator**: Generates scanner-compliant QR codes featuring Nothing's signature dot-matrix modules, rounded eyes, and central earbud emblem.
+- **Hardware Limit Validation**: Automatically checks frequencies, gain (-6 to +6 dB), and Q factors (0.1 to 10.0) against Nothing's official hardware limits.
+- **Working Nothing-Style QR Generator**: Generates scanner-compliant QR codes featuring Nothing's signature dot-matrix modules, rounded eyes, and central earbud emblem.
 - **Full Share Poster Mode**: Optionally creates the complete 9:16 Nothing share card with frequency response curve preview.
 - **CSV Import & Export**: Export profiles or create new profiles to and from CSV.
 - **Direct String Mode**: Can parse and generate raw Base64 QR text payloads directly.
@@ -57,7 +57,7 @@ On Linux distributions, `pyzbar` requires the system ZBar shared library:
 
 ### 1. Decoding (`decoder.py`)
 
-#### Scan a Screenshot
+#### Scan an Image or Screenshot (PNG, JPG, WEBP, BMP)
 ```bash
 python decoder.py screenshot.png
 ```
